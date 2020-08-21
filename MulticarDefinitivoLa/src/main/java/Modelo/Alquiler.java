@@ -248,7 +248,7 @@ public class Alquiler {
 
     @Override
     public String toString() {
-        return "Alquiler{" + "numeroRecibo=" + numeroRecibo + ", valorAlquiler=" + valorAlquiler + ", DIAS_ALQUILER=" + DIAS_ALQUILER + ", cliente=" + cliente + ", listaVehiculos=" + listaVehiculos + ", fecha=" + fecha + ", hora=" + hora + ", recaudo=" + recaudo + '}';
+        return "Alquiler{" + "numeroRecibo=" + numeroRecibo + ", valorAlquiler=" + valorAlquiler + ", DIAS_ALQUILER=" + DIAS_ALQUILER + ", cliente=" + cliente + ", listaVehiculos=" + listaVehiculos.size() + ", fecha=" + fecha + ", hora=" + hora + ", recaudo=" + recaudo + '}';
     }
 
 }

@@ -36,6 +36,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import reportes.PdfFactura;
 import vista.VistaListaVehiculosJPanel;
 
 
@@ -429,6 +430,7 @@ public class Controlador implements ActionListener, FocusListener, Observer {
         if (this.vistaListaAlquiler == null) {
             cerrarTodasLasVentantas();
             this.vistaListaAlquiler = new VistaListaAlquiler();
+            llenarTablaListaAlquiler("", "", "");
             this.principal.setSize(this.vistaListaAlquiler.getSize().width, this.principal.getSize().height);
             VistaPrincipal.jDesktopPane.setSize(this.vistaListaAlquiler.getSize().width, VistaPrincipal.jDesktopPane.getSize().height);
             this.principal.setLocationRelativeTo(null);
@@ -671,6 +673,8 @@ public class Controlador implements ActionListener, FocusListener, Observer {
             JOptionPane.showMessageDialog(this.formularioRegistro,
                     "Alquiler registrado con Exito\n" + "Numero de Recibo: " + this.alquilerDao.getAlquiler().getNumeroRecibo() + "\n"
                     + this.tiempo.toString());
+            JOptionPane.showMessageDialog(this.formularioRegistro, "SE HA GENERADO UNA FACTURA PARA ESTE ALQUILER");
+            PdfFactura.generarFacturaPdf(this.alquilerDao.getAlquiler());
             actualizarVehiculosClientes(1, cliente, listaVehiculo, this.alquilerDao.getAlquiler().getNumeroRecibo());
 
             this.alquilerDao.setAlquiler(new Alquiler());
@@ -779,8 +783,6 @@ public class Controlador implements ActionListener, FocusListener, Observer {
      */
     private void llenarTablaListaVehiculos(String p1, String p2, String p3) {
 
-        System.out.println("parametros de busquedad:  " + p1+"  "+p2+ ""+p3+"\n");
-        
         List<Vehiculo> listaVehiculos = this.vehiculoDao.consultar_vehiculos();
 
         if (listaVehiculos.isEmpty()) {
@@ -802,15 +804,15 @@ public class Controlador implements ActionListener, FocusListener, Observer {
                 if (p1.isEmpty() && p2.isEmpty() && p3.isEmpty()) {
                     indice = i;
                 } else {
-                    if (String.valueOf(listaVehiculos.get(i).getNumeroFactura()).contains(p1)&&!p1.isEmpty()) {
+                    if (String.valueOf(listaVehiculos.get(i).getNumeroFactura()).contains(p1) && !p1.isEmpty()) {
                         indice = i;
-                    } else if (listaVehiculos.get(i).getDescripcionVehiculo().contains(p2)&&!p2.isEmpty()) {
+                    } else if (listaVehiculos.get(i).getDescripcionVehiculo().contains(p2) && !p2.isEmpty()) {
                         indice = i;
-                        
+
                     } else if (!p3.isEmpty()) {
                         int var;
-                        var =  "Alquilado".contains(p3) ? 0 : "Disponible".contains(p3) ? 1 : "Entregado".contains(p3) ? 3 : -1; 
-                        if(!p3.isEmpty() && listaVehiculos.get(i).getEstadoVehiculo() == var){
+                        var = "Alquilado".contains(p3) ? 0 : "Disponible".contains(p3) ? 1 : "Entregado".contains(p3) ? 3 : -1;
+                        if (!p3.isEmpty() && listaVehiculos.get(i).getEstadoVehiculo() == var) {
                             indice = i;
                         }
                     }
@@ -829,6 +831,46 @@ public class Controlador implements ActionListener, FocusListener, Observer {
                     columna = 0;
                 }
             }
+        }
+    }
+
+    private void llenarTablaListaAlquiler(String p1, String p2, String p3) {
+
+        try {
+            Alquiler alquiler;
+            List<Alquiler> listaAlquileres = this.alquilerDao.consultar_todos_alquileres();
+            
+            if (listaAlquileres.isEmpty()) {
+                JOptionPane.showMessageDialog(this.vistaListaAlquiler, "NO SE ENCUENTRAN VEHICULOS DISPONIBLES");
+            } else {
+                int columna = 0;
+                int fila = 0;
+                DefaultTableModel model = (DefaultTableModel) this.vistaListaAlquiler.getjTableListaAlquiler().getModel();
+                limpiarTablaListaAlquiler();
+                
+                for (int i = 0; i < listaAlquileres.size(); i++) {
+                    alquiler = listaAlquileres.get(i);
+                    for (int j = 0; j < listaAlquileres.get(i).getListaVehiculos().size(); j++) {
+                        
+                        model.addRow(new Object[]{});
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getNumeroRecibo(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getCliente().getNombre(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getListaVehiculos().get(j).getDescripcionVehiculo(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getListaVehiculos().get(j).getDescripcionGeneralVehiculo(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getDIAS_ALQUILER(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getValorAlquiler(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.calcularValorSeguro(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getFecha().convertirFechaDevueltaString(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getHora().getHoraEntrega(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getFecha().convertirFechaDevueltaString(), fila, columna++);
+                        this.vistaListaAlquiler.getjTableListaAlquiler().setValueAt(alquiler.getHora().getHoraDevuelta(), fila++, columna++);
+                        
+                        columna = 0;
+                    }
+                }
+            }
+        } catch (FormatoEntradaException ex) {
+            JOptionPane.showMessageDialog(this.vistaListaAlquiler, ex);
         }
     }
 
@@ -922,4 +964,17 @@ public class Controlador implements ActionListener, FocusListener, Observer {
             }
         }
     }
+
+    private void limpiarTablaListaAlquiler() {
+
+        int filas = this.vistaListaAlquiler.getjTableListaAlquiler().getRowCount();
+        if (filas > 0) {
+            for (int i = 0; i < filas; i++) {
+                DefaultTableModel model = (DefaultTableModel) this.vistaListaAlquiler.getjTableListaAlquiler().getModel();
+                model.removeRow(0);
+            }
+        }
+    }
+
 }
+

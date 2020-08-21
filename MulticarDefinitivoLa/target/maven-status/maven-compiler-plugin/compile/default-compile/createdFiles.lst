@@ -26,6 +26,7 @@ vista/VistaListaClientes$1.class
 Modelo/Vehiculo.class
 vista/FormularioVehiculo.class
 Modelo/Fecha.class
+reportes/PdfFactura.class
 vista/VistaListaAlquiler$1.class
 Modelo/Cliente.class
 vista/VistaPrincipal.class

@@ -5,6 +5,8 @@
  */
 package vista;
 
+import javax.swing.JButton;
+import javax.swing.JTable;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 /**
@@ -37,7 +39,7 @@ public class VistaListaAlquiler extends javax.swing.JInternalFrame {
         jButtonCerrar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableListaAlquiler = new javax.swing.JTable();
         jTextFieldNombre1 = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -75,9 +77,9 @@ public class VistaListaAlquiler extends javax.swing.JInternalFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED, java.awt.Color.gray, java.awt.Color.darkGray, java.awt.Color.white, java.awt.Color.lightGray), "Detalle Alquiler", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 17))); // NOI18N
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTable1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jTable1.setFont(new java.awt.Font("Noto Sans", 1, 11)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableListaAlquiler.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jTableListaAlquiler.setFont(new java.awt.Font("Noto Sans", 1, 11)); // NOI18N
+        jTableListaAlquiler.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -93,10 +95,10 @@ public class VistaListaAlquiler extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setMaximumSize(new java.awt.Dimension(90, 0));
-        jTable1.setShowHorizontalLines(false);
-        jTable1.setShowVerticalLines(false);
-        jScrollPane1.setViewportView(jTable1);
+        jTableListaAlquiler.setMaximumSize(new java.awt.Dimension(90, 0));
+        jTableListaAlquiler.setShowHorizontalLines(false);
+        jTableListaAlquiler.setShowVerticalLines(false);
+        jScrollPane1.setViewportView(jTableListaAlquiler);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 1160, 230));
 
@@ -142,8 +144,28 @@ public class VistaListaAlquiler extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableListaAlquiler;
     private javax.swing.JTextField jTextFieldNombre1;
     private javax.swing.JTextField jTextFieldNombre2;
     // End of variables declaration//GEN-END:variables
+
+    public JButton getjButtonCerrar() {
+        return jButtonCerrar;
+    }
+
+    public void setjButtonCerrar(JButton jButtonCerrar) {
+        this.jButtonCerrar = jButtonCerrar;
+    }
+
+    public JTable getjTableListaAlquiler() {
+        return jTableListaAlquiler;
+    }
+
+    public void setjTableListaAlquiler(JTable jTableListaAlquiler) {
+        this.jTableListaAlquiler = jTableListaAlquiler;
+    }
+
+
 }
+
+

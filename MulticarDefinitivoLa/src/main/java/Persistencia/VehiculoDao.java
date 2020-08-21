@@ -30,6 +30,7 @@ public class VehiculoDao {
             + "tipo_vehiculo = ? WHERE id_vehiculo = ?";
     private final String CONSULTAR_TODO = "SELECT * FROM vehiculo";
     private final String CONSULTAR_POR_ID_VEHICULO = "SELECT * FROM vehiculo WHERE id_vehiculo = ?";
+    private final String CONSULTAR_VEHICULOS_POR_NUMERO_FACTURA = "SELECT * FROM vehiculo WHERE numero_factura = ?";
     private final String CONSULTAR_POR_PLACA_VEHICULO = "SELECT * FROM vehiculo WHERE placa_vehiculo LIKE ?";
     private final String ELIMINAR_VEHICULO = "DELETE FROM vehiculo WHERE id_vehiculo = ?";
 
@@ -111,9 +112,43 @@ public class VehiculoDao {
                 if (vehiculoTemp.getNumeroFactura() == 0) {
                     return vehiculoTemp;
                 }
-                indice=1;
+                indice = 1;
             }
             return vehiculoTemp;
+        } catch (SQLException ex) {
+            throw new FormatoEntradaException(ex.getErrorCode(), ex.getMessage());
+        } finally {
+            Conexion.cerrarConexion();
+        }
+    }
+
+    public List<Vehiculo> consultarVehiculoPorFactura(int id) throws FormatoEntradaException {
+
+        try {
+            List<Vehiculo> listaVehiculo = new ArrayList<>();
+            Vehiculo vehiculoTemp;
+            PreparedStatement ps = Conexion.getConexion().prepareCall(this.CONSULTAR_VEHICULOS_POR_NUMERO_FACTURA);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            int indice = 1;
+            while (rs.next()) {
+                if (rs.getInt(6) == 1) {
+                    vehiculoTemp = new TipoAuto();
+                } else {
+                    vehiculoTemp = new TipoCamioneta();
+                }
+
+                vehiculoTemp.setIdVehiculo(rs.getInt(indice++));
+                vehiculoTemp.setDescripcionGeneralVehiculo(rs.getString(indice++));
+                vehiculoTemp.setPlacasVehiculo(rs.getString(indice++));
+                vehiculoTemp.setKilometrajeVehiculo(rs.getDouble(indice++));
+                vehiculoTemp.setEstadoVehiculo(rs.getInt(indice++));
+                vehiculoTemp.setDescripcionVehiculo(rs.getInt(indice++) == 1 ? "Auto" : "Camioneta");
+                vehiculoTemp.setNumeroFactura(rs.getInt(indice++));
+                listaVehiculo.add(vehiculoTemp);
+                indice = 1;
+            }
+            return listaVehiculo;
         } catch (SQLException ex) {
             throw new FormatoEntradaException(ex.getErrorCode(), ex.getMessage());
         } finally {
@@ -144,10 +179,10 @@ public class VehiculoDao {
                 vehiculoTemp.setEstadoVehiculo(rs.getInt(indice++));
                 vehiculoTemp.setDescripcionVehiculo(rs.getInt(indice++) == 1 ? "Auto" : "Camioneta");
                 vehiculoTemp.setNumeroFactura(rs.getInt(indice++));
-                if(vehiculoTemp.getNumeroFactura() == 0){
+                if (vehiculoTemp.getNumeroFactura() == 0) {
                     return vehiculoTemp;
                 }
-                indice=1;
+                indice = 1;
             }
             return vehiculoTemp;
         } catch (SQLException ex) {
@@ -157,8 +192,6 @@ public class VehiculoDao {
         }
     }
 
-    
-    
     public List<Vehiculo> consultar_vehiculos() {//YA QUEDO
 
         try {

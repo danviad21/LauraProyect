@@ -30,91 +30,8 @@ public class Hora {
         this.segundos = segudo;
     }
     
-    
-    
-    
-    
-//    private Date horaEntrega;
-//    private Date horaDevuelta;
-//
-//    /**
-//     *
-//     * @param date
-//     */
-//    public Hora(Date date) {
-//        System.out.println("fecha modelo: "+date);
-//        this.horaEntrega = date;
-//        this.horaDevuelta = date;
-//    }
-//
-//    /**
-//     * Retorna el contenido del atributo HoraEntrega de la clase
-//     *
-//     * @return Date
-//     */
-//    public Date getHoraEntrega() {
-//        return horaEntrega;
-//    }
-//
-//    /**
-//     * Modifica o actualiza el atributo HoraEntrega de la clase a partir del
-//     * dato que recibe en formato texto - numerico por medio del sistema.
-//     *
-//     * @param horaEntrega Hora exacta en la cual el usuario recibe el vehiculo
-//     * @throws Modelo.FormatoEntradaException
-//     */
-//    public void setHoraEntrega(Date horaEntrega) throws FormatoEntradaException {
-//        if (horaEntrega == null) {
-//            throw new FormatoEntradaException(101, "INFORMACION HORA");
-//        }
-//        this.horaEntrega = horaEntrega;
-//    }
-//
-//    /**
-//     * Retorna el contenido del atributo HoraDevuelta de la clase
-//     *
-//     * @return Date
-//     */
-//    public Date getHoraDevuelta() {
-//        return horaDevuelta;
-//    }
-//
-//    /**
-//     * Modifica o actualiza el atributo HoraDevuelta de la clase a partir del
-//     * dato que recibe en formato texto - numerico por medio del sistema.
-//     *
-//     * @param horaDevuelta Hora exacta en la cual el usuario debe devolver el
-//     * vehiculo alquilado previamente.
-//     * @throws Modelo.FormatoEntradaException
-//     */
-//    public void setHoraDevuelta(Date horaDevuelta) throws FormatoEntradaException {
-//        if (horaDevuelta == null) {
-//            throw new FormatoEntradaException(101, "INFORMACION TIEMPO");
-//        }
-//
-//        this.horaDevuelta = horaDevuelta;
-//    }
-//
-//    /**
-//     *
-//     * @return El valor de la variable HoraEntrega aplicando un formato
-//     * Utilizando la clase SimpleDateFormat y la expresion HH:mm:ss
-//     *
-//     */
-//    public String convertirHoraEntregaString() {
-//        return new SimpleDateFormat("hh:mm:ss").format(this.horaEntrega);
-//    }
-//
-//    /**
-//     *
-//     * @return El valor de la variable HoraDevuelta aplicando un formato
-//     * Utilizando la clase SimpleDateFormat y la expresion HH:mm:ss
-//     *
-//     */
-//    public String convertirHoraDevueltaString() {
-//        return new SimpleDateFormat("hh:mm:ss").format(this.horaDevuelta);
-//    }
-
+       
+ 
     public int getHora() {
         return hora;
     }
@@ -138,12 +55,17 @@ public class Hora {
     public void setSegundos(int segundos) {
         this.segundos = segundos;
     }
+    
+    public String getHoraEntrega(){
+        return this.hora + ":" + this.minutos + ":" + this.segundos;
+    }
+    
+    public String getHoraDevuelta(){
+        return this.hora + ":" + this.minutos + ":" + this.segundos;
+    }
 
     @Override
     public String toString() {
         return "Hora:  "+hora + ": " + this.minutos + ":" + this.segundos + " HRS     ";
     }
-    
-    
-
 }

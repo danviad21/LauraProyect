@@ -11,15 +11,13 @@ import Modelo.Fecha;
 import Modelo.FormatoEntradaException;
 import Modelo.Hora;
 import Modelo.Recaudo;
-import Modelo.TipoAuto;
-import Modelo.TipoCamioneta;
 import Modelo.Vehiculo;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -43,8 +41,15 @@ public class AlquilerDao {
             + " on(a.numero_recibo = c.numero_factura) inner join vehiculo v"
             + " on(a.numero_recibo = v.numero_factura)\n"
             + " order by 1 asc;";
-
-    private final String CONSULTAR_POR_ID_ALQUILER = "SELECT * FROM alquiler WHERE recibo_alquiler = ?";
+    
+    private final String CONSULTAR_POR_ID_ALQUILER = "select distinct a.numero_recibo,"
+            + " a.dias_alquilados, a.precio_alquiler, a.seguro,a.fecha_entrega,"
+            + "a.hora_entrega, a.fecha_devuelta, a.hora_entrega, a.total_pagar,"
+            + " c.id_cliente, v.id_vehiculo from alquiler a inner join cliente c"
+            + " on(a.numero_recibo = c.numero_factura) inner join vehiculo v"
+            + " on(a.numero_recibo = v.numero_factura)\n"
+            + " WHERE a.numero_recibo = ?"
+            + " order by 1 asc LIMIT 1;";
 
     private final String ELIMINAR_ALQUILER = "DELETE FROM alquiler WHERE recibo_alquiler = ?";
 
@@ -91,58 +96,106 @@ public class AlquilerDao {
 
     }
 
-    public void consultar_todos_alquileres() throws FormatoEntradaException {
-/*
+    public Alquiler consultar_alquiler_por_recibo(int numero_recibo) throws FormatoEntradaException {
+
+        try {
+            int i = 0;
+            Alquiler alquilerTemp = null;
+            List<Vehiculo> listaVehiculo;
+            Cliente cliente;
+            Recaudo recaudo;
+            Fecha fecha;
+            Hora hora;
+
+            PreparedStatement ps = Conexion.getConexion().prepareCall(this.CONSULTAR_POR_ID_ALQUILER);
+            ps.setInt(1, numero_recibo);
+            ResultSet rs = ps.executeQuery();
+            int indice = 1;
+            while (rs.next()) {
+
+                alquilerTemp = new Alquiler();
+                alquilerTemp.setNumeroRecibo(rs.getInt(indice++));
+                alquilerTemp.setValorAlquiler(rs.getInt(indice++));
+                indice++;
+                indice++;
+                fecha = new Fecha(rs.getDate(indice++));
+                alquilerTemp.setFecha(fecha);
+                Time time = rs.getTime(indice++);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(time);
+                hora = new Hora(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), calendar.get(Calendar.DAY_OF_YEAR));
+                alquilerTemp.setHora(hora);
+                indice++;
+                indice++;
+                recaudo = new Recaudo();
+                recaudo.setValorTotalRecuado(rs.getDouble(indice++));
+                alquilerTemp.setRecaudo(recaudo);
+                cliente = new ClienteDao().consultar_una_persona(rs.getInt(indice++));
+                alquilerTemp.setCliente(cliente);
+                listaVehiculo = new VehiculoDao().consultarVehiculoPorFactura(alquilerTemp.getNumeroRecibo());
+                alquilerTemp.setListaVehiculos(listaVehiculo);
+            }
+            return alquilerTemp;
+
+        } catch (SQLException ex) {
+            throw new FormatoEntradaException(ex.getErrorCode(), ex.getMessage());
+        } finally {
+            Conexion.cerrarConexion();
+        }
+    }
+
+    public List<Alquiler> consultar_todos_alquileres() throws FormatoEntradaException {
+
         try {
             int i = 0;
             List<Alquiler> listaAlquiler = new ArrayList<>();
-            Alquiler alquiler;
-            Vehiculo vehiculo;
+            Alquiler alquilerTemp;
+            List<Vehiculo> listaVehiculo;
             Cliente cliente;
-            Recaudo recuado;
+            Recaudo recaudo;
             Fecha fecha;
             Hora hora;
-            
-             a.numero_recibo,"
-            + " a.dias_alquilados, a.precio_alquiler, a.seguro,a.fecha_entrega,"
-            + "a.hora_entrega, a.fecha_devuelta, a.hora_entrega, a.total_pagar,"
-            + " c.id_cliente, v.id_vehiculo 
 
             PreparedStatement ps = Conexion.getConexion().prepareCall(this.CONSULTAR_TODO);
             ResultSet rs = ps.executeQuery();
-            int indiceCambio=-1;
-            int indice =1;
+            int indiceCambio = -1;
+            int indice = 1;
             while (rs.next()) {
 
-                if(indiceCambio !=rs.getInt(indice)){
-                    alquiler = new Alquiler();
-                    alquiler.setNumeroRecibo(indice++);
-                    alquiler.setValorAlquiler(indice++);
+                if (indiceCambio != rs.getInt(indice)) {
+                    alquilerTemp = new Alquiler();
+                    alquilerTemp.setNumeroRecibo(rs.getInt(indice++));
+                    indiceCambio = alquilerTemp.getNumeroRecibo();
+                    alquilerTemp.setValorAlquiler(rs.getInt(indice++));
+                    indice++;
                     indice++;
                     fecha = new Fecha(rs.getDate(indice++));
+                    alquilerTemp.setFecha(fecha);
                     Time time = rs.getTime(indice++);
-                    time.g
-                    hora = new Hora();
-                    
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(time);
+                    hora = new Hora(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), calendar.get(Calendar.DAY_OF_YEAR));
+                    alquilerTemp.setHora(hora);
+                    indice++;
+                    indice++;
+                    recaudo = new Recaudo();
+                    recaudo.setValorTotalRecuado(rs.getDouble(indice++));
+                    alquilerTemp.setRecaudo(recaudo);
+                    cliente = new ClienteDao().consultar_una_persona(rs.getInt(indice++));
+                    alquilerTemp.setCliente(cliente);
+                    listaVehiculo = new VehiculoDao().consultarVehiculoPorFactura(alquilerTemp.getNumeroRecibo());
+                    alquilerTemp.setListaVehiculos(listaVehiculo);
+                    listaAlquiler.add(alquilerTemp);
                 }
-
-
-                cliente = new Cliente();
-                cliente.setNombre("");
-                vehiculo = new TipoAuto();
-                vehiculo = new TipoCamioneta();
-                vehiculo.setDescripcionVehiculo("");
-                vehiculo.setDescripcionGeneralVehiculo("");
-                recuado = new Recaudo();
-//               fecha = new Fecha();
-                hora = new Hora();
+                indice = 1;
             }
             return listaAlquiler;
 
         } catch (SQLException ex) {
             throw new FormatoEntradaException(ex.getErrorCode(), ex.getMessage());
+        } finally {
+            Conexion.cerrarConexion();
         }
-        */
     }
 
     public void eliminar_alquiler(Long id) {

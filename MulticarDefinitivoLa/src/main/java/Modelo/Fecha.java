@@ -99,7 +99,7 @@ public class Fecha {
      */
     public String convertirFechaEntregaString() {
 //        return new SimpleDateFormat("dd-MM-yyyy").format(this.fechaEntrega);
-        return new SimpleDateFormat("%d %m %Y").format(this.fechaEntrega);
+        return new SimpleDateFormat("dd-MM-yyyy").format(this.fechaEntrega);
     }
 
     /**
@@ -110,6 +110,6 @@ public class Fecha {
      */
     public String convertirFechaDevueltaString() {
 //        return new SimpleDateFormat("dd-MM-yyyy").format(this.fechaEntrega);
-        return new SimpleDateFormat("%d %m %Y").format(this.fechaDevuelta);
+        return new SimpleDateFormat("dd-MM-yyyy").format(this.fechaDevuelta);
     }
 }
